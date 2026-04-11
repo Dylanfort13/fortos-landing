@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FortOS Landing Page — Project Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Newsreader:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07080d;
+    --bg2: #0d0f17;
+    --bg3: #141722;
+    --bg4: #1a1e2e;
+    --border: #1e2235;
+    --border-bright: #2d3352;
+    --text: #c8cce0;
+    --text-dim: #6b7194;
+    --text-bright: #eef0ff;
+    --orange: #f0763c;
+    --orange-glow: rgba(240,118,60,0.12);
+    --orange-glow2: rgba(240,118,60,0.06);
+    --cyan: #36d6d0;
+    --cyan-glow: rgba(54,214,208,0.1);
+    --green: #5eda82;
+    --green-glow: rgba(94,218,130,0.1);
+    --blue: #5b8cf0;
+    --blue-glow: rgba(91,140,240,0.1);
+    --purple: #a882f0;
+    --purple-glow: rgba(168,130,240,0.1);
+    --yellow: #edc55a;
+    --yellow-glow: rgba(237,197,90,0.1);
+    --pink: #f06292;
+    --pink-glow: rgba(240,98,146,0.1);
+    --red: #f05c5c;
+    --red-glow: rgba(240,92,92,0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ---- TOP BAR ---- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .project-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--orange);
+    border: 1px solid rgba(240,118,60,0.3);
+    padding: 0.3rem 0.75rem;
+    border-radius: 100px;
+    background: var(--orange-glow);
+    white-space: nowrap;
+  }
+
+  .project-title {
+    font-family: 'Newsreader', serif;
+    font-size: 1.35rem;
+    font-weight: 400;
+    color: var(--text-bright);
+  }
+  .project-title em { color: var(--orange); font-style: italic; }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .phase-indicator {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .phase-indicator span {
+    color: var(--cyan);
+    font-weight: 600;
+  }
+
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .progress-bar-outer {
+    width: 120px;
+    height: 5px;
+    background: var(--border);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .progress-bar-inner {
+    height: 100%;
+    background: linear-gradient(90deg, var(--orange), var(--cyan));
+    border-radius: 100px;
+    transition: width 0.5s ease;
+  }
+  .progress-pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    min-width: 30px;
+  }
+
+  /* ---- MAIN LAYOUT ---- */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 1.25rem;
+    padding: 1.5rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ---- PIPELINE ---- */
+  .pipeline-section {
+    grid-column: 1 / -1;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.85rem;
+  }
+
+  .pipeline {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .phase-step {
+    padding: 1.1rem 1rem;
+    border-right: 1px solid var(--border);
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .phase-step:last-child { border-right: none; }
+  .phase-step:hover { background: var(--bg3); }
+  .phase-step.active { background: var(--bg4); }
+  .phase-step.done { background: var(--bg2); }
+
+  .phase-step-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .phase-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    font-weight: 500;
+  }
+
+  .phase-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border-bright);
+    flex-shrink: 0;
+  }
+  .phase-status-dot.done { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .phase-status-dot.active { background: var(--orange); box-shadow: 0 0 6px var(--orange); animation: pulse 2s infinite; }
+  .phase-status-dot.blocked { background: var(--red); box-shadow: 0 0 6px var(--red); }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .phase-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-bright);
+    margin-bottom: 0.2rem;
+  }
+  .phase-name.done { color: var(--text-dim); }
+
+  .phase-sub {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    line-height: 1.4;
+  }
+
+  .phase-progress {
+    margin-top: 0.6rem;
+    height: 3px;
+    background: var(--border);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .phase-progress-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 0.4s ease;
+  }
+
+  /* ---- CARDS BASE ---- */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-glow-top {
+    position: absolute;
+    top: 0; left: 1.5rem; right: 1.5rem;
+    height: 1.5px;
+    border-radius: 0 0 4px 4px;
+  }
+
+  .card-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-bright);
+    margin-bottom: 0.2rem;
+  }
+
+  /* ---- TASKS CARD ---- */
+  .tasks-card {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .task-group {
+    margin-bottom: 1rem;
+  }
+  .task-group-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.45rem 0;
+    border-radius: 6px;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+  .task-item:hover { background: var(--bg3); padding-left: 0.4rem; }
+
+  .task-check {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--border-bright);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    background: transparent;
+  }
+  .task-item.checked .task-check {
+    background: var(--green);
+    border-color: var(--green);
+  }
+  .task-item.checked .task-check::after {
+    content: '✓';
+    color: #07080d;
+    font-size: 0.65rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .task-text {
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.4;
+    flex: 1;
+    transition: color 0.2s;
+  }
+  .task-item.checked .task-text {
+    color: var(--text-dim);
+    text-decoration: line-through;
+    text-decoration-color: var(--border-bright);
+  }
+
+  .task-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ---- TOOLS CARD ---- */
+  .tools-card {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .tool-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem;
+    margin-top: 0.75rem;
+  }
+
+  .tool-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.8rem 0.9rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .tool-btn:hover {
+    border-color: var(--border-bright);
+    transform: translateY(-1px);
+  }
+  .tool-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1.5px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .tool-btn:hover::before { opacity: 1; }
+
+  .tool-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .tool-info { flex: 1; min-width: 0; }
+  .tool-name {
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--text-bright);
+    display: block;
+    line-height: 1.2;
+  }
+  .tool-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+    display: block;
+    margin-top: 0.1rem;
+  }
+
+  .tool-status-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.5rem;
+    padding: 0.15rem 0.4rem;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+  }
+  .status-ready { background: var(--green-glow); color: var(--green); border: 1px solid rgba(94,218,130,0.2); }
+  .status-setup { background: var(--orange-glow); color: var(--orange); border: 1px solid rgba(240,118,60,0.2); }
+  .status-pending { background: var(--bg4); color: var(--text-dim); border: 1px solid var(--border); }
+
+  /* tool-specific accent colors via data attribute */
+  .tool-btn[data-color="orange"] { --accent: var(--orange); --accent-glow: var(--orange-glow); }
+  .tool-btn[data-color="purple"] { --accent: var(--purple); --accent-glow: var(--purple-glow); }
+  .tool-btn[data-color="pink"]   { --accent: var(--pink);   --accent-glow: var(--pink-glow); }
+  .tool-btn[data-color="blue"]   { --accent: var(--blue);   --accent-glow: var(--blue-glow); }
+  .tool-btn[data-color="purple2"]{ --accent: var(--purple); --accent-glow: var(--purple-glow); }
+  .tool-btn[data-color="yellow"] { --accent: var(--yellow); --accent-glow: var(--yellow-glow); }
+  .tool-btn[data-color="green"]  { --accent: var(--green);  --accent-glow: var(--green-glow); }
+  .tool-btn[data-color="cyan"]   { --accent: var(--cyan);   --accent-glow: var(--cyan-glow); }
+
+  .tool-btn:hover { border-color: var(--accent, var(--border-bright)); }
+  .tool-btn::before { background: var(--accent, var(--orange)); }
+  .tool-icon { background: var(--accent-glow, var(--bg4)); color: var(--accent, var(--text)); }
+
+  /* path copy tool (for Cursor/Claude Code) */
+  .path-copy {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .path-copy:hover { border-color: var(--border-bright); }
+  .path-copy-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .path-copy-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--text-dim);
+    background: var(--border);
+    border: none;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .path-copy-btn:hover { background: var(--border-bright); color: var(--text-bright); }
+  .path-copy-btn.copied { background: var(--green-glow); color: var(--green); border: 1px solid rgba(94,218,130,0.2); }
+
+  /* local tools section */
+  .local-tools-section {
+    margin-top: 0.85rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ---- STACK STATUS CARD ---- */
+  .stack-card {
+    grid-column: 3;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .stack-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 0.85rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: border-color 0.2s;
+  }
+  .stack-row:hover { border-color: var(--border-bright); }
+
+  .stack-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .stack-dot.green { background: var(--green); box-shadow: 0 0 5px var(--green); }
+  .stack-dot.orange { background: var(--orange); box-shadow: 0 0 5px var(--orange); animation: pulse 2s infinite; }
+  .stack-dot.grey { background: var(--border-bright); }
+
+  .stack-name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-bright);
+    flex: 1;
+  }
+  .stack-state {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+  .stack-state.green { color: var(--green); }
+  .stack-state.orange { color: var(--orange); }
+
+  /* ---- BOTTOM ROW ---- */
+  .filemap-card {
+    grid-column: 1 / 3;
+    grid-row: 3;
+  }
+
+  .file-tree {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    line-height: 1.9;
+    margin-top: 0.75rem;
+  }
+  .file-tree .folder { color: var(--cyan); }
+  .file-tree .important { color: var(--text); font-weight: 500; }
+  .file-tree .comment { color: var(--border-bright); font-style: italic; }
+  .file-tree .pending { color: var(--border-bright); text-decoration: line-through; text-decoration-color: var(--border); }
+  .file-tree .highlight { color: var(--orange); }
+
+  .file-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 0.75rem;
+  }
+
+  .file-col-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.4rem;
+  }
+
+  /* ---- NOTES CARD ---- */
+  .notes-card {
+    grid-column: 3;
+    grid-row: 3;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .notes-textarea {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    padding: 0.75rem;
+    resize: none;
+    min-height: 180px;
+    margin-top: 0.75rem;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .notes-textarea:focus { border-color: var(--border-bright); }
+  .notes-textarea::placeholder { color: var(--border-bright); }
+
+  .notes-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+  }
+  .notes-saved {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--text-dim);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .notes-saved.visible { opacity: 1; }
+  .notes-clear {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--text-dim);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s;
+  }
+  .notes-clear:hover { color: var(--red); }
+
+  /* ---- DEPLOY CHECKLIST ---- */
+  .deploy-card {
+    grid-column: 1 / -1;
+    grid-row: 4;
+  }
+
+  .deploy-track {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    margin-top: 0.85rem;
+    position: relative;
+  }
+  .deploy-track::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--green), var(--cyan), var(--blue), var(--purple), var(--orange));
+    border-radius: 1px;
+    z-index: 0;
+  }
+
+  .deploy-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .deploy-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .deploy-circle.done {
+    border-color: var(--green);
+    background: var(--green-glow);
+    box-shadow: 0 0 12px rgba(94,218,130,0.2);
+  }
+  .deploy-circle.active {
+    border-color: var(--orange);
+    background: var(--orange-glow);
+    box-shadow: 0 0 12px rgba(240,118,60,0.2);
+  }
+
+  .deploy-label {
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--text);
+    text-align: center;
+  }
+  .deploy-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* ---- SEPARATOR ---- */
+  .section-sep {
+    grid-column: 1 / -1;
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0.25rem 0;
+  }
+
+  /* ---- MISC ---- */
+  .text-orange { color: var(--orange); }
+  .text-cyan   { color: var(--cyan); }
+  .text-green  { color: var(--green); }
+  .text-purple { color: var(--purple); }
+  .text-blue   { color: var(--blue); }
+  .text-yellow { color: var(--yellow); }
+  .text-pink   { color: var(--pink); }
+
+  /* Tooltip on copy */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: var(--bg3);
+    border: 1px solid var(--border-bright);
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--green);
+    opacity: 0;
+    transition: all 0.25s;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (max-width: 1100px) {
+    .main { grid-template-columns: 1fr 1fr; }
+    .pipeline { grid-template-columns: repeat(3, 1fr); }
+    .tasks-card  { grid-column: 1; grid-row: 2; }
+    .tools-card  { grid-column: 2; grid-row: 2; }
+    .stack-card  { grid-column: 1 / -1; grid-row: 3; flex-direction: row; flex-wrap: wrap; }
+    .filemap-card { grid-column: 1 / -1; grid-row: 4; }
+    .notes-card  { grid-column: 1 / -1; grid-row: 5; }
+    .deploy-card { grid-column: 1 / -1; grid-row: 6; }
+  }
+
+  @media (max-width: 700px) {
+    .main { grid-template-columns: 1fr; }
+    .topbar { flex-direction: column; align-items: flex-start; }
+    .pipeline { grid-template-columns: 1fr 1fr; }
+    .deploy-track { grid-template-columns: 1fr; gap: 1rem; }
+    .deploy-track::before { display: none; }
+    .file-grid { grid-template-columns: 1fr; }
+    .tool-grid { grid-template-columns: 1fr; }
+    .tasks-card, .tools-card, .stack-card, .filemap-card, .notes-card, .deploy-card {
+      grid-column: 1; grid-row: auto;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ======== TOP BAR ======== -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="project-badge">FortX Project</div>
+    <h1 class="project-title"><em>FortOS</em> Landing Page</h1>
+  </div>
+  <div class="topbar-right">
+    <span class="phase-indicator">Current phase: <span id="current-phase-label">Setup</span></span>
+    <div class="progress-wrap">
+      <div class="progress-bar-outer">
+        <div class="progress-bar-inner" id="global-progress" style="width: 0%"></div>
+      </div>
+      <span class="progress-pct" id="global-pct">0%</span>
+    </div>
+  </div>
+</div>
+
+<!-- ======== MAIN GRID ======== -->
+<div class="main">
+
+  <!-- ======== PIPELINE ======== -->
+  <div class="pipeline-section">
+    <div class="section-label">Project Pipeline</div>
+    <div class="pipeline" id="pipeline">
+
+      <div class="phase-step" data-phase="0" onclick="setActivePhase(0)">
+        <div class="phase-step-top">
+          <span class="phase-num">01</span>
+          <div class="phase-status-dot active" id="dot-0"></div>
+        </div>
+        <div class="phase-name" id="pname-0">Setup</div>
+        <div class="phase-sub">Repo, DB, Vercel project created</div>
+        <div class="phase-progress"><div class="phase-progress-fill" id="pprog-0" style="background:var(--orange); width:0%"></div></div>
+      </div>
+
+      <div class="phase-step" data-phase="1" onclick="setActivePhase(1)">
+        <div class="phase-step-top">
+          <span class="phase-num">02</span>
+          <div class="phase-status-dot" id="dot-1"></div>
+        </div>
+        <div class="phase-name" id="pname-1">Design</div>
+        <div class="phase-sub">Wireframe, copy, component list</div>
+        <div class="phase-progress"><div class="phase-progress-fill" id="pprog-1" style="background:var(--purple); width:0%"></div></div>
+      </div>
+
+      <div class="phase-step" data-phase="2" onclick="setActivePhase(2)">
+        <div class="phase-step-top">
+          <span class="phase-num">03</span>
+          <div class="phase-status-dot" id="dot-2"></div>
+        </div>
+        <div class="phase-name" id="pname-2">Build</div>
+        <div class="phase-sub">Claude Code writes the page</div>
+        <div class="phase-progress"><div class="phase-progress-fill" id="pprog-2" style="background:var(--cyan); width:0%"></div></div>
+      </div>
+
+      <div class="phase-step" data-phase="3" onclick="setActivePhase(3)">
+        <div class="phase-step-top">
+          <span class="phase-num">04</span>
+          <div class="phase-status-dot" id="dot-3"></div>
+        </div>
+        <div class="phase-name" id="pname-3">Review</div>
+        <div class="phase-sub">Visual check, copy, mobile</div>
+        <div class="phase-progress"><div class="phase-progress-fill" id="pprog-3" style="background:var(--yellow); width:0%"></div></div>
+      </div>
+
+      <div class="phase-step" data-phase="4" onclick="setActivePhase(4)">
+        <div class="phase-step-top">
+          <span class="phase-num">05</span>
+          <div class="phase-status-dot" id="dot-4"></div>
+        </div>
+        <div class="phase-name" id="pname-4">Deploy</div>
+        <div class="phase-sub">Git push → Vercel auto-build</div>
+        <div class="phase-progress"><div class="phase-progress-fill" id="pprog-4" style="background:var(--blue); width:0%"></div></div>
+      </div>
+
+      <div class="phase-step" data-phase="5" onclick="setActivePhase(5)">
+        <div class="phase-step-top">
+          <span class="phase-num">06</span>
+          <div class="phase-status-dot" id="dot-5"></div>
+        </div>
+        <div class="phase-name" id="pname-5">Live</div>
+        <div class="phase-sub">Domain, Cloudflare, public URL</div>
+        <div class="phase-progress"><div class="phase-progress-fill" id="pprog-5" style="background:var(--green); width:0%"></div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ======== TASKS ======== -->
+  <div class="card tasks-card">
+    <div class="card-glow-top" style="background:linear-gradient(90deg,transparent,var(--orange),transparent)"></div>
+    <div class="card-title">Tasks &amp; Checklist</div>
+    <div class="section-label" style="margin-top:0.25rem">Click to check off</div>
+
+    <div id="task-list">
+
+      <div class="task-group">
+        <div class="task-group-title text-orange">Phase 1 — Setup</div>
+        <div class="task-item" data-id="t1" onclick="toggleTask('t1')">
+          <div class="task-check"></div>
+          <span class="task-text">Create GitHub repo for FortOS landing page</span>
+          <span class="task-tag">GitHub</span>
+        </div>
+        <div class="task-item checked" data-id="t2" onclick="toggleTask('t2')">
+          <div class="task-check"></div>
+          <span class="task-text">Scaffold Next.js + Payload CMS project locally</span>
+          <span class="task-tag">Done</span>
+        </div>
+        <div class="task-item" data-id="t3" onclick="toggleTask('t3')">
+          <div class="task-check"></div>
+          <span class="task-text">Create Neon PostgreSQL database</span>
+          <span class="task-tag">Neon</span>
+        </div>
+        <div class="task-item" data-id="t4" onclick="toggleTask('t4')">
+          <div class="task-check"></div>
+          <span class="task-text">Connect Vercel project to GitHub repo</span>
+          <span class="task-tag">Vercel</span>
+        </div>
+        <div class="task-item" data-id="t5" onclick="toggleTask('t5')">
+          <div class="task-check"></div>
+          <span class="task-text">Add env vars to Vercel (DATABASE_URL, PAYLOAD_SECRET)</span>
+          <span class="task-tag">Vercel</span>
+        </div>
+      </div>
+
+      <div class="task-group">
+        <div class="task-group-title text-purple">Phase 2 — Design</div>
+        <div class="task-item" data-id="t6" onclick="toggleTask('t6')">
+          <div class="task-check"></div>
+          <span class="task-text">Define FortOS headline, value prop, and CTA copy</span>
+          <span class="task-tag">Copy</span>
+        </div>
+        <div class="task-item" data-id="t7" onclick="toggleTask('t7')">
+          <div class="task-check"></div>
+          <span class="task-text">List sections: Hero, Features, How it works, CTA</span>
+          <span class="task-tag">Structure</span>
+        </div>
+        <div class="task-item" data-id="t8" onclick="toggleTask('t8')">
+          <div class="task-check"></div>
+          <span class="task-text">Confirm visual direction (dark, FortX brand colors)</span>
+          <span class="task-tag">Design</span>
+        </div>
+      </div>
+
+      <div class="task-group">
+        <div class="task-group-title text-cyan">Phase 3 — Build</div>
+        <div class="task-item" data-id="t9" onclick="toggleTask('t9')">
+          <div class="task-check"></div>
+          <span class="task-text">Build Hero section (headline + CTA + visual)</span>
+          <span class="task-tag">Claude Code</span>
+        </div>
+        <div class="task-item" data-id="t10" onclick="toggleTask('t10')">
+          <div class="task-check"></div>
+          <span class="task-text">Build Features section (3-4 key features)</span>
+          <span class="task-tag">Claude Code</span>
+        </div>
+        <div class="task-item" data-id="t11" onclick="toggleTask('t11')">
+          <div class="task-check"></div>
+          <span class="task-text">Build How It Works section</span>
+          <span class="task-tag">Claude Code</span>
+        </div>
+        <div class="task-item" data-id="t12" onclick="toggleTask('t12')">
+          <div class="task-check"></div>
+          <span class="task-text">Build final CTA + Footer</span>
+          <span class="task-tag">Claude Code</span>
+        </div>
+        <div class="task-item" data-id="t13" onclick="toggleTask('t13')">
+          <div class="task-check"></div>
+          <span class="task-text">Mobile responsiveness pass</span>
+          <span class="task-tag">Claude Code</span>
+        </div>
+      </div>
+
+      <div class="task-group">
+        <div class="task-group-title text-yellow">Phase 4 — Review</div>
+        <div class="task-item" data-id="t14" onclick="toggleTask('t14')">
+          <div class="task-check"></div>
+          <span class="task-text">Visual review in Cursor (check design in browser)</span>
+          <span class="task-tag">Cursor</span>
+        </div>
+        <div class="task-item" data-id="t15" onclick="toggleTask('t15')">
+          <div class="task-check"></div>
+          <span class="task-text">Copy review — headlines, CTAs, tone</span>
+          <span class="task-tag">You</span>
+        </div>
+        <div class="task-item" data-id="t16" onclick="toggleTask('t16')">
+          <div class="task-check"></div>
+          <span class="task-text">Mobile + tablet layout check</span>
+          <span class="task-tag">DevTools</span>
+        </div>
+      </div>
+
+      <div class="task-group">
+        <div class="task-group-title text-blue">Phase 5 — Deploy</div>
+        <div class="task-item" data-id="t17" onclick="toggleTask('t17')">
+          <div class="task-check"></div>
+          <span class="task-text">git add, commit, push to GitHub main</span>
+          <span class="task-tag">Git</span>
+        </div>
+        <div class="task-item" data-id="t18" onclick="toggleTask('t18')">
+          <div class="task-check"></div>
+          <span class="task-text">Verify Vercel build passes (no errors)</span>
+          <span class="task-tag">Vercel</span>
+        </div>
+        <div class="task-item" data-id="t19" onclick="toggleTask('t19')">
+          <div class="task-check"></div>
+          <span class="task-text">Open preview URL and do final visual check</span>
+          <span class="task-tag">Browser</span>
+        </div>
+      </div>
+
+      <div class="task-group">
+        <div class="task-group-title text-green">Phase 6 — Live</div>
+        <div class="task-item" data-id="t20" onclick="toggleTask('t20')">
+          <div class="task-check"></div>
+          <span class="task-text">Add custom domain in Vercel</span>
+          <span class="task-tag">Vercel</span>
+        </div>
+        <div class="task-item" data-id="t21" onclick="toggleTask('t21')">
+          <div class="task-check"></div>
+          <span class="task-text">Point domain DNS to Vercel in Cloudflare</span>
+          <span class="task-tag">Cloudflare</span>
+        </div>
+        <div class="task-item" data-id="t22" onclick="toggleTask('t22')">
+          <div class="task-check"></div>
+          <span class="task-text">Enable Cloudflare proxy + SSL</span>
+          <span class="task-tag">Cloudflare</span>
+        </div>
+        <div class="task-item" data-id="t23" onclick="toggleTask('t23')">
+          <div class="task-check"></div>
+          <span class="task-text">Site is live — share the URL</span>
+          <span class="task-tag">Done</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ======== TOOLS ======== -->
+  <div class="card tools-card">
+    <div class="card-glow-top" style="background:linear-gradient(90deg,transparent,var(--cyan),transparent)"></div>
+    <div class="card-title">Quick Launch</div>
+    <div class="section-label" style="margin-top:0.25rem">Open tools instantly</div>
+
+    <div class="tool-grid">
+
+      <a href="https://github.com" target="_blank" class="tool-btn" data-color="pink">
+        <div class="tool-icon">☁️</div>
+        <div class="tool-info">
+          <span class="tool-name">GitHub</span>
+          <span class="tool-role">Code vault</span>
+        </div>
+        <span class="tool-status-badge status-pending" id="st-github">pending</span>
+      </a>
+
+      <a href="https://vercel.com/dashboard" target="_blank" class="tool-btn" data-color="blue">
+        <div class="tool-icon">🚀</div>
+        <div class="tool-info">
+          <span class="tool-name">Vercel</span>
+          <span class="tool-role">Publisher / Host</span>
+        </div>
+        <span class="tool-status-badge status-pending" id="st-vercel">pending</span>
+      </a>
+
+      <a href="https://console.neon.tech" target="_blank" class="tool-btn" data-color="purple">
+        <div class="tool-icon">💾</div>
+        <div class="tool-info">
+          <span class="tool-name">Neon DB</span>
+          <span class="tool-role">PostgreSQL database</span>
+        </div>
+        <span class="tool-status-badge status-pending" id="st-neon">pending</span>
+      </a>
+
+      <a href="https://dash.cloudflare.com" target="_blank" class="tool-btn" data-color="yellow">
+        <div class="tool-icon">🛡️</div>
+        <div class="tool-info">
+          <span class="tool-name">Cloudflare</span>
+          <span class="tool-role">DNS / Shield / CDN</span>
+        </div>
+        <span class="tool-status-badge status-pending" id="st-cf">pending</span>
+      </a>
+
+    </div>
+
+    <!-- Local tool paths -->
+    <div class="local-tools-section">
+      <div class="section-label">Local Tools — Copy Path</div>
+
+      <div style="display:flex; flex-direction:column; gap:0.4rem;">
+
+        <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.2rem;">
+          <div class="tool-icon" style="width:28px;height:28px;border-radius:6px;font-size:0.85rem;background:var(--orange-glow);color:var(--orange);">🤖</div>
+          <span style="font-weight:600;font-size:0.82rem;color:var(--text-bright);">Claude Code</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-dim);">terminal / CLI</span>
+        </div>
+        <div class="path-copy" onclick="copyPath('claude-path', 'claude code .')">
+          <span class="path-copy-label">claude code .</span>
+          <button class="path-copy-btn" id="claude-path">copy cmd</button>
+        </div>
+        <div class="path-copy" onclick="copyPath('dev-cmd', 'npm run dev')">
+          <span class="path-copy-label">npm run dev  <span style="color:var(--green);font-size:0.55rem;">← start local server</span></span>
+          <button class="path-copy-btn" id="dev-cmd">copy cmd</button>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:0.5rem; margin:0.4rem 0 0.2rem;">
+          <div class="tool-icon" style="width:28px;height:28px;border-radius:6px;font-size:0.85rem;background:var(--purple-glow);color:var(--purple);">✏️</div>
+          <span style="font-weight:600;font-size:0.82rem;color:var(--text-bright);">Cursor</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-dim);">code editor</span>
+        </div>
+        <div class="path-copy" onclick="copyPath('cursor-path', 'cursor .')">
+          <span class="path-copy-label">cursor .</span>
+          <button class="path-copy-btn" id="cursor-path">copy cmd</button>
+        </div>
+
+        <div class="path-copy" onclick="copyPath('proj-path', 'C:\\Users\\Dylan\\Desktop\\FortOS\\platform')">
+          <span class="path-copy-label" id="project-path-display">C:\Users\Dylan\Desktop\FortOS\platform</span>
+          <button class="path-copy-btn" id="proj-path">copy path</button>
+        </div>
+
+      </div>
+
+      <div style="margin-top:0.6rem;">
+        <div class="section-label" style="margin-bottom:0.35rem;">Project folder path</div>
+        <input
+          type="text"
+          id="project-folder-input"
+          placeholder="Set your project folder path…"
+          style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:0.72rem;padding:0.45rem 0.65rem;outline:none;transition:border-color 0.2s;"
+          onfocus="this.style.borderColor='var(--border-bright)'"
+          onblur="this.style.borderColor='var(--border)'; saveProjectPath(this.value)"
+        >
+      </div>
+    </div>
+
+    <!-- Tool status toggles -->
+    <div class="local-tools-section">
+      <div class="section-label">Mark tools as set up</div>
+      <div style="display:flex; flex-direction:column; gap:0.3rem;">
+        <label style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;font-size:0.83rem;color:var(--text);">
+          <input type="checkbox" id="chk-github" onchange="updateToolStatus('github', this.checked)" style="accent-color:var(--pink);width:14px;height:14px;">
+          GitHub repo created
+        </label>
+        <label style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;font-size:0.83rem;color:var(--text);">
+          <input type="checkbox" id="chk-vercel" onchange="updateToolStatus('vercel', this.checked)" style="accent-color:var(--blue);width:14px;height:14px;">
+          Vercel project connected
+        </label>
+        <label style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;font-size:0.83rem;color:var(--text);">
+          <input type="checkbox" id="chk-neon" onchange="updateToolStatus('neon', this.checked)" style="accent-color:var(--purple);width:14px;height:14px;">
+          Neon database created
+        </label>
+        <label style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;font-size:0.83rem;color:var(--text);">
+          <input type="checkbox" id="chk-cf" onchange="updateToolStatus('cf', this.checked)" style="accent-color:var(--yellow);width:14px;height:14px;">
+          Cloudflare domain ready
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== STACK STATUS ======== -->
+  <div class="card stack-card">
+    <div class="card-glow-top" style="background:linear-gradient(90deg,transparent,var(--green),transparent)"></div>
+    <div class="card-title">Stack Status</div>
+    <div class="section-label" style="margin-top:0.25rem">Service health at a glance</div>
+
+    <div class="stack-row">
+      <div class="stack-dot green"></div>
+      <span class="stack-name">Node.js</span>
+      <span class="stack-state green">v20.15.1</span>
+    </div>
+    <div class="stack-row">
+      <div class="stack-dot green"></div>
+      <span class="stack-name">npm</span>
+      <span class="stack-state green">v10.7.0</span>
+    </div>
+    <div class="stack-row">
+      <div class="stack-dot green"></div>
+      <span class="stack-name">pnpm</span>
+      <span class="stack-state green">v10.31.0</span>
+    </div>
+    <div class="stack-row">
+      <div class="stack-dot green"></div>
+      <span class="stack-name">Git</span>
+      <span class="stack-state green">v2.53.0</span>
+    </div>
+    <div class="stack-row">
+      <div class="stack-dot green"></div>
+      <span class="stack-name">Claude Code</span>
+      <span class="stack-state green">running</span>
+    </div>
+    <div class="stack-row">
+      <div class="stack-dot green"></div>
+      <span class="stack-name">Platform (Next.js+Payload)</span>
+      <span class="stack-state green">built locally</span>
+    </div>
+    <div class="stack-row">
+      <div class="stack-dot green"></div>
+      <span class="stack-name">node_modules</span>
+      <span class="stack-state green">370 packages</span>
+    </div>
+    <div class="stack-row">
+      <div class="stack-dot green"></div>
+      <span class="stack-name">.env.local</span>
+      <span class="stack-state green">SQLite demo mode</span>
+    </div>
+    <div class="stack-row">
+      <div class="stack-dot orange" id="sd-github"></div>
+      <span class="stack-name">GitHub Repo</span>
+      <span class="stack-state orange" id="ss-github">not created</span>
+    </div>
+    <div class="stack-row">
+      <div class="stack-dot orange" id="sd-vercel"></div>
+      <span class="stack-name">Vercel Project</span>
+      <span class="stack-state orange" id="ss-vercel">not connected</span>
+    </div>
+    <div class="stack-row">
+      <div class="stack-dot orange" id="sd-neon"></div>
+      <span class="stack-name">Neon Database</span>
+      <span class="stack-state orange" id="ss-neon">not created</span>
+    </div>
+    <div class="stack-row">
+      <div class="stack-dot grey" id="sd-cf"></div>
+      <span class="stack-name">Cloudflare DNS</span>
+      <span class="stack-state" id="ss-cf">phase 6</span>
+    </div>
+    <div class="stack-row">
+      <div class="stack-dot grey"></div>
+      <span class="stack-name">Custom Domain</span>
+      <span class="stack-state">phase 6</span>
+    </div>
+  </div>
+
+  <!-- ======== FILE MAP ======== -->
+  <div class="card filemap-card">
+    <div class="card-glow-top" style="background:linear-gradient(90deg,transparent,var(--purple),transparent)"></div>
+    <div class="card-title">Where Things Live</div>
+    <div class="section-label" style="margin-top:0.25rem">Local folder structure &amp; cloud services</div>
+
+    <div class="file-grid">
+      <div>
+        <div class="file-col-title">Local project — Desktop\FortOS\platform\</div>
+        <div class="file-tree">
+<span class="folder">platform/</span>  <span class="comment">← already built ✓</span>
+├── <span class="folder">src/</span>
+│   ├── <span class="folder">app/</span>
+│   │   ├── <span class="important">(admin)/</span>     <span class="comment">← Payload admin panel</span>
+│   │   ├── <span class="important">(payload)/</span>   <span class="comment">← CMS routes</span>
+│   │   ├── <span class="important">(portal)/</span>    <span class="comment">← Client portal</span>
+│   │   └── <span class="important">(site)/</span>      <span class="comment">← Public site</span>
+│   ├── <span class="folder">components/</span>
+│   ├── <span class="folder">services/</span>
+│   └── <span class="folder">templates/</span>   <span class="comment">← Site templates</span>
+├── <span class="highlight">.env.local</span>          <span class="comment">← SQLite demo mode</span>
+├── <span class="highlight">.env.example</span>        <span class="comment">← prod config template</span>
+├── <span class="important">payload.config.ts</span>
+├── <span class="important">next.config.js</span>
+└── <span class="folder">node_modules/</span>       <span class="comment">← 370 pkgs installed ✓</span>
+        </div>
+      </div>
+      <div>
+        <div class="file-col-title">Also in Desktop\FortOS\</div>
+        <div class="file-tree">
+<span class="folder">FortOS/</span>
+├── <span class="highlight">fortos-landing.html</span>  <span class="comment">← landing page draft ✓</span>
+├── <span class="important">NEEDS_FROM_DYLAN.md</span>  <span class="comment">← prod checklist</span>
+├── <span class="important">DEMO_SETUP.md</span>
+├── <span class="folder">platform/</span>            <span class="comment">← the app (above)</span>
+├── <span class="folder">n8n-workflows/</span>
+├── <span class="folder">dashboard-data/</span>
+└── <span class="highlight">START.bat</span>            <span class="comment">← one-click local start</span>
+
+<span class="folder">GitHub</span>  <span class="comment">← not created yet</span>
+<span class="pending">└── fortx-platform (pending)</span>
+
+<span class="folder">Vercel</span>  <span class="comment">← not connected yet</span>
+<span class="pending">└── (pending — needs GitHub first)</span>
+
+<span class="folder">Neon DB</span>  <span class="comment">← using SQLite locally for now</span>
+<span class="pending">└── fortx-web (pending — for production)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== NOTES ======== -->
+  <div class="card notes-card">
+    <div class="card-glow-top" style="background:linear-gradient(90deg,transparent,var(--yellow),transparent)"></div>
+    <div class="card-title">Notes &amp; Decisions</div>
+    <div class="section-label" style="margin-top:0.25rem">Saved automatically</div>
+    <textarea
+      class="notes-textarea"
+      id="notes-area"
+      placeholder="Drop thoughts, decisions, URLs, or context here…&#10;&#10;e.g. — Using Outfit font to match FortX brand&#10;e.g. — Hero headline: 'Your OS. Your Rules.'&#10;e.g. — Neon DB string: postgresql://…"
+    ></textarea>
+    <div class="notes-footer">
+      <span class="notes-saved" id="notes-saved">saved</span>
+      <button class="notes-clear" onclick="clearNotes()">clear notes</button>
+    </div>
+  </div>
+
+  <!-- ======== DEPLOY PIPELINE ======== -->
+  <div class="card deploy-card">
+    <div class="card-glow-top" style="background:linear-gradient(90deg,transparent,var(--blue),transparent)"></div>
+    <div class="card-title">Publish Pipeline — How Your Code Gets Live</div>
+    <div class="section-label" style="margin-top:0.25rem">The exact flow, every time</div>
+
+    <div class="deploy-track">
+
+      <div class="deploy-step">
+        <div class="deploy-circle" id="dp-0">🤖</div>
+        <span class="deploy-label">Write Code</span>
+        <span class="deploy-sub">Claude Code edits<br>your files locally</span>
+      </div>
+
+      <div class="deploy-step">
+        <div class="deploy-circle" id="dp-1">🔀</div>
+        <span class="deploy-label">Commit</span>
+        <span class="deploy-sub">git add + commit<br>saves a checkpoint</span>
+      </div>
+
+      <div class="deploy-step">
+        <div class="deploy-circle" id="dp-2">☁️</div>
+        <span class="deploy-label">Push</span>
+        <span class="deploy-sub">git push → code<br>lands on GitHub</span>
+      </div>
+
+      <div class="deploy-step">
+        <div class="deploy-circle" id="dp-3">🚀</div>
+        <span class="deploy-label">Auto-Deploy</span>
+        <span class="deploy-sub">Vercel sees push,<br>builds automatically</span>
+      </div>
+
+      <div class="deploy-step">
+        <div class="deploy-circle" id="dp-4">🌍</div>
+        <span class="deploy-label">Live</span>
+        <span class="deploy-sub">Site is public,<br>via Cloudflare CDN</span>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- Toast notification -->
+<div class="toast" id="toast">Copied to clipboard</div>
+
+<script>
+// ============================================================
+//  STATE
+// ============================================================
+const STORAGE_KEY = 'fortos-dashboard-v1';
+
+function loadState() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  } catch(e) { return {}; }
+}
+
+function saveState(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+// Pre-populate defaults for first-time load (won't overwrite saved state)
+if (!state.tasks) {
+  // t2 = platform already scaffolded (confirmed exists)
+  state.tasks = { t2: true };
+}
+if (!state.tools)       state.tools = {};
+if (!state.notes)       state.notes = '— Platform already built at Desktop\\FortOS\\platform\\\n— node_modules installed (370 pkgs)\n— .env.local in SQLite demo mode (no external DB needed yet)\n— fortos-landing.html draft already exists\n— Next steps: git init → GitHub repo → Vercel → push';
+if (!state.projPath)    state.projPath = 'C:\\Users\\Dylan\\Desktop\\FortOS\\platform';
+if (!state.activePhase) state.activePhase = 0;
+
+// ============================================================
+//  TASKS
+// ============================================================
+function toggleTask(id) {
+  state.tasks[id] = !state.tasks[id];
+  saveState(state);
+  renderTasks();
+  updateProgress();
+}
+
+function renderTasks() {
+  document.querySelectorAll('.task-item').forEach(el => {
+    const id = el.dataset.id;
+    if (state.tasks[id]) {
+      el.classList.add('checked');
+    } else {
+      el.classList.remove('checked');
+    }
+  });
+}
+
+// ============================================================
+//  PROGRESS
+// ============================================================
+const phaseTaskMap = {
+  0: ['t1','t2','t3','t4','t5'],
+  1: ['t6','t7','t8'],
+  2: ['t9','t10','t11','t12','t13'],
+  3: ['t14','t15','t16'],
+  4: ['t17','t18','t19'],
+  5: ['t20','t21','t22','t23'],
+};
+
+const phaseNames = ['Setup','Design','Build','Review','Deploy','Live'];
+
+function updateProgress() {
+  let totalDone = 0;
+  let totalAll  = 0;
+
+  for (let p = 0; p < 6; p++) {
+    const tasks = phaseTaskMap[p];
+    const done  = tasks.filter(id => state.tasks[id]).length;
+    const pct   = tasks.length ? Math.round((done / tasks.length) * 100) : 0;
+    totalDone  += done;
+    totalAll   += tasks.length;
+
+    const bar = document.getElementById('pprog-' + p);
+    if (bar) bar.style.width = pct + '%';
+
+    const dot = document.getElementById('dot-' + p);
+    if (dot) {
+      dot.className = 'phase-status-dot';
+      if (pct === 100) {
+        dot.classList.add('done');
+      } else if (p === state.activePhase) {
+        dot.classList.add('active');
+      }
+    }
+
+    const pname = document.getElementById('pname-' + p);
+    if (pname) {
+      pname.className = 'phase-name';
+      if (pct === 100) pname.classList.add('done');
+    }
+  }
+
+  const globalPct = totalAll ? Math.round((totalDone / totalAll) * 100) : 0;
+  document.getElementById('global-progress').style.width = globalPct + '%';
+  document.getElementById('global-pct').textContent = globalPct + '%';
+  document.getElementById('current-phase-label').textContent = phaseNames[state.activePhase];
+}
+
+// ============================================================
+//  PIPELINE — active phase click
+// ============================================================
+function setActivePhase(phase) {
+  state.activePhase = phase;
+  saveState(state);
+  document.querySelectorAll('.phase-step').forEach((el, i) => {
+    el.classList.toggle('active', i === phase);
+  });
+  updateProgress();
+}
+
+// ============================================================
+//  TOOL STATUS
+// ============================================================
+const toolConfig = {
+  github: { dot: 'sd-github', state: 'ss-github', badge: 'st-github', on: 'ready', off: 'not created' },
+  vercel: { dot: 'sd-vercel', state: 'ss-vercel', badge: 'st-vercel', on: 'ready', off: 'not connected' },
+  neon:   { dot: 'sd-neon',   state: 'ss-neon',   badge: 'st-neon',   on: 'ready', off: 'not created' },
+  cf:     { dot: 'sd-cf',     state: 'ss-cf',     badge: 'st-cf',     on: 'ready', off: 'phase 6' },
+};
+
+function updateToolStatus(name, isReady) {
+  state.tools[name] = isReady;
+  saveState(state);
+  renderToolStatuses();
+}
+
+function renderToolStatuses() {
+  for (const [name, cfg] of Object.entries(toolConfig)) {
+    const isReady = !!state.tools[name];
+
+    const dot = document.getElementById(cfg.dot);
+    if (dot) {
+      dot.className = 'stack-dot ' + (isReady ? 'green' : (name === 'cf' && !isReady ? 'grey' : 'orange'));
+    }
+
+    const stateEl = document.getElementById(cfg.state);
+    if (stateEl) {
+      stateEl.textContent = isReady ? cfg.on : cfg.off;
+      stateEl.className = 'stack-state ' + (isReady ? 'green' : (name === 'cf' && !isReady ? '' : 'orange'));
+    }
+
+    const badge = document.getElementById(cfg.badge);
+    if (badge) {
+      badge.textContent = isReady ? 'ready' : 'pending';
+      badge.className = 'tool-status-badge ' + (isReady ? 'status-ready' : 'status-pending');
+    }
+
+    const chk = document.getElementById('chk-' + name);
+    if (chk) chk.checked = isReady;
+  }
+}
+
+// ============================================================
+//  NOTES
+// ============================================================
+const notesArea = document.getElementById('notes-area');
+const notesSaved = document.getElementById('notes-saved');
+let notesTimer = null;
+
+notesArea.value = state.notes;
+notesArea.addEventListener('input', () => {
+  clearTimeout(notesTimer);
+  notesSaved.classList.remove('visible');
+  notesTimer = setTimeout(() => {
+    state.notes = notesArea.value;
+    saveState(state);
+    notesSaved.classList.add('visible');
+    setTimeout(() => notesSaved.classList.remove('visible'), 2000);
+  }, 800);
+});
+
+function clearNotes() {
+  if (confirm('Clear all notes?')) {
+    notesArea.value = '';
+    state.notes = '';
+    saveState(state);
+  }
+}
+
+// ============================================================
+//  PROJECT PATH
+// ============================================================
+function saveProjectPath(val) {
+  state.projPath = val;
+  saveState(state);
+  document.getElementById('project-path-display').textContent = val;
+}
+
+document.getElementById('project-folder-input').value = state.projPath;
+document.getElementById('project-path-display').textContent = state.projPath;
+
+// ============================================================
+//  COPY TO CLIPBOARD
+// ============================================================
+function copyPath(btnId, text) {
+  const actualText = (btnId === 'proj-path') ? state.projPath : text;
+  navigator.clipboard.writeText(actualText).then(() => {
+    const btn = document.getElementById(btnId);
+    btn.textContent = 'copied!';
+    btn.classList.add('copied');
+    showToast('Copied: ' + actualText);
+    setTimeout(() => {
+      btn.textContent = btnId === 'proj-path' ? 'copy path' : 'copy cmd';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ============================================================
+//  DEPLOY STEPS — click to mark done
+// ============================================================
+for (let i = 0; i < 5; i++) {
+  const el = document.getElementById('dp-' + i);
+  if (el) {
+    el.addEventListener('click', () => {
+      state['dp' + i] = !state['dp' + i];
+      saveState(state);
+      renderDeploySteps();
+    });
+  }
+}
+
+function renderDeploySteps() {
+  for (let i = 0; i < 5; i++) {
+    const el = document.getElementById('dp-' + i);
+    if (!el) continue;
+    el.className = 'deploy-circle ' + (state['dp' + i] ? 'done' : '');
+  }
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+renderTasks();
+renderToolStatuses();
+renderDeploySteps();
+updateProgress();
+setActivePhase(state.activePhase);
+
+// restore phase-step active class
+document.querySelectorAll('.phase-step').forEach((el, i) => {
+  el.classList.toggle('active', i === state.activePhase);
+});
+</script>
+</body>
+</html>
