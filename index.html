@@ -47,7 +47,7 @@
       -webkit-backdrop-filter: blur(14px);
     }
     .nav-logo {
-      font-size: 1.6rem;
+      font-size: 1.7rem;
       font-weight: 400;
       color: var(--cream);
       letter-spacing: 0.04em;
@@ -110,7 +110,7 @@
     }
 
     .history-kicker {
-      font-size: 1.6rem;
+      font-size: 1.7rem;
       font-weight: 300;
       font-style: italic;
       color: var(--muted-on-light);
@@ -154,7 +154,7 @@
     }
 
     .pillars-intro-kicker {
-      font-size: 1.6rem;
+      font-size: 1.7rem;
       font-weight: 300;
       font-style: italic;
       color: rgba(241, 244, 247, 0.60);
@@ -353,7 +353,7 @@
     }
 
     .exclusive-kicker {
-      font-size: 1.6rem;
+      font-size: 1.7rem;
       font-weight: 300;
       font-style: italic;
       color: rgba(241, 244, 247, 0.60);
@@ -396,7 +396,7 @@
     }
 
     .access-kicker {
-      font-size: 1.6rem;
+      font-size: 1.7rem;
       font-weight: 300;
       font-style: italic;
       color: var(--muted-on-light);
@@ -555,9 +555,10 @@
       .quote-section {
         flex-direction: column;
         text-align: center;
-        gap: 3rem;
+        gap: 1.25rem;
       }
-      .quote-img { width: min(45%, 190px); margin: 0 auto; }
+      .quote-img { width: min(45%, 160px); margin: 0 auto; }
+      .quote-text { font-size: clamp(1.25rem, 3.5vw, 1.6rem); }
     }
 
     @media (max-width: 680px) {
@@ -581,6 +582,18 @@
       .pillars-intro h2 { font-size: 1.8rem; }
       .solo-wrap h2     { font-size: 2.1rem; }
       .access-left h2   { font-size: 2rem; }
+    }
+    /* ══════════════════════════════════════════════════
+       SCROLL FADE
+    ══════════════════════════════════════════════════ */
+    .fade {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade.in {
+      opacity: 1;
+      transform: none;
     }
   </style>
 </head>
@@ -933,6 +946,32 @@
     el.style.borderBottomColor = 'rgba(180,50,50,0.5)';
     setTimeout(() => { el.style.borderBottomColor = ''; }, 2200);
   }
+
+  /* ── Scroll fade-in ── */
+  const fadeTargets = document.querySelectorAll([
+    '.hero h1', '.hero-sub', '.hero-img',
+    '.history-kicker', '.history h2', '.history-body p',
+    '.pillars-intro-kicker', '.pillars-intro h2', '.pillars-intro p',
+    '.pillars-divider', '.pillars-heading', '.pillar',
+    '.solo-wrap h2', '.solo-sub', '.solo-body p', '.solo-card',
+    '.exclusive-kicker', '.exclusive-band h2', '.exclusive-band p',
+    '.access-kicker', '.access-left h2', '.access-left p', '.form-box', '.form-note',
+    '.quote-img', '.quote-text', '.quote-attr',
+    '.footer-logo', '.footer-legal'
+  ].join(','));
+
+  fadeTargets.forEach(el => el.classList.add('fade'));
+
+  const fadeObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        fadeObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  fadeTargets.forEach(el => fadeObserver.observe(el));
 </script>
 
 </body>
