@@ -321,16 +321,16 @@
       <!-- Revenue -->
       <div class="form-group">
         <label class="form-label" for="q-revenue">
-          Chiffre d'affaires mensuel actuel
+          Chiffre d’affaires mensuel actuel
           <span>(approximatif)</span>
         </label>
         <select class="form-field" id="q-revenue" required>
           <option value="" disabled selected>Sélectionner une tranche</option>
-          <option value="under-2k">Moins de 2 000 $</option>
-          <option value="2k-5k">2 000 $ – 5 000 $</option>
-          <option value="5k-15k">5 000 $ – 15 000 $</option>
-          <option value="15k-50k">15 000 $ – 50 000 $</option>
-          <option value="50k+">50 000 $+</option>
+          <option value="under-2k">Moins de 2 000 $</option>
+          <option value="2k-5k">2 000 $ – 5 000 $</option>
+          <option value="5k-15k">5 000 $ – 15 000 $</option>
+          <option value="15k-50k">15 000 $ – 50 000 $</option>
+          <option value="50k+">50 000 $+</option>
         </select>
       </div>
 
@@ -355,7 +355,7 @@
       <div class="form-group">
         <label class="form-label" for="q-services">
           Services que vous proposez actuellement
-          <span>(sélectionnez tout ce qui s'applique)</span>
+          <span>(sélectionnez tout ce qui s’applique)</span>
         </label>
         <div class="check-group">
           <label class="check-label">
@@ -384,7 +384,7 @@
       <!-- Bottleneck -->
       <div class="form-group">
         <label class="form-label" for="q-bottleneck">
-          Quel est votre principal frein en ce moment ?
+          Quel est votre principal frein en ce moment ?
         </label>
         <textarea
           class="form-field"
@@ -397,20 +397,20 @@
       <!-- Goal -->
       <div class="form-group">
         <label class="form-label" for="q-goal">
-          À quoi ressemblerait opérer différemment pour vous ?
+          À quoi ressemblerait opérer différemment pour vous ?
           <span>(en une ou deux phrases)</span>
         </label>
         <textarea
           class="form-field"
           id="q-goal"
-          placeholder="Qu'est-ce qui changerait si le plafond était supprimé ?"
+          placeholder="Qu’est-ce qui changerait si le plafond était supprimé ?"
         ></textarea>
       </div>
 
       <!-- How they found the page -->
       <div class="form-group">
         <label class="form-label" for="q-source">
-          Comment avez-vous trouvé cette page ?
+          Comment avez-vous trouvé cette page ?
         </label>
         <input
           type="text"
@@ -446,7 +446,7 @@
     <h2 class="modal-title" id="modal-title">Merci.</h2>
     <p class="modal-body" id="modal-name-line">
       Nous examinerons votre candidature et vous contacterons personnellement.<br><br>
-      Ce n'est pas automatisé. Quelqu'un lira vraiment ce que vous avez écrit.
+      Ce n’est pas automatisé. Quelqu’un lira vraiment ce que vous avez écrit.
       Si vous correspondez au profil, vous aurez de nos nouvelles bientôt.
     </p>
   </div>
@@ -460,8 +460,8 @@
   if (firstName) {
     const nameEl = document.getElementById('modal-name-line');
     nameEl.innerHTML = `Nous avons votre candidature, ${firstName}.<br><br>
-      Nous l'examinerons et vous contacterons personnellement.<br><br>
-      Ce n'est pas automatisé. Quelqu'un lira vraiment ce que vous avez écrit.
+      Nous l’examinerons et vous contacterons personnellement.<br><br>
+      Ce n’est pas automatisé. Quelqu’un lira vraiment ce que vous avez écrit.
       Si vous correspondez au profil, vous aurez de nos nouvelles bientôt.`;
   }
 
@@ -469,8 +469,8 @@
   document.getElementById('qualify-form').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    const revenue    = document.getElementById('q-revenue');
-    const clients    = document.getElementById('q-clients');
+    const revenue  = document.getElementById('q-revenue');
+    const clients  = document.getElementById('q-clients');
     const bottleneck = document.getElementById('q-bottleneck');
 
     let valid = true;
@@ -485,7 +485,10 @@
 
     if (!valid) return;
 
+    /* Show thank-you modal */
     document.getElementById('modal').classList.add('visible');
+
+    /* Prevent background scroll */
     document.body.style.overflow = 'hidden';
   });
 
