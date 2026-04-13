@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>fortOS — Parlez-nous de votre activité</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Cormorant Garamond', Georgia, serif; overflow-x: hidden; }
+
+    :root {
+      --navy:           #010b15;
+      --cream:          #f1f4f7;
+      --body-on-light:  rgba(1, 11, 21, 0.72);
+      --muted-on-light: rgba(1, 11, 21, 0.42);
+      --body-on-dark:   rgba(241, 244, 247, 0.70);
+      --muted-on-dark:  rgba(241, 244, 247, 0.38);
+      --rule-light:     rgba(1, 11, 21, 0.10);
+      --rule-dark:      rgba(241, 244, 247, 0.14);
+    }
+
+    /* ── NAV ───────────────────────────────────── */
+    #nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      padding: 1.6rem 5vw;
+      background: rgba(1, 11, 21, 0.90);
+      border-bottom: 1px solid rgba(241,244,247,0.08);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .nav-logo {
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: var(--cream);
+      letter-spacing: 0.04em;
+      text-decoration: none;
+    }
+
+    /* ── HEADER (dark navy) ─────────────────────── */
+    .qualify-header {
+      background: var(--navy);
+      padding: 11rem 5vw 7rem;
+      text-align: center;
+    }
+
+    .qualify-header .kicker {
+      font-size: clamp(1rem, 1.8vw, 1.15rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--muted-on-dark);
+      margin-bottom: 1.25rem;
+    }
+
+    .qualify-header h1 {
+      font-size: clamp(2rem, 4.5vw, 3.6rem);
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      line-height: 1.2;
+      color: var(--cream);
+      max-width: 700px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .qualify-header p {
+      font-size: clamp(0.95rem, 1.7vw, 1.05rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--body-on-dark);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* ── FORM SECTION (cream) ───────────────────── */
+    .qualify-body {
+      background: var(--cream);
+      padding: 7rem 5vw 9rem;
+    }
+
+    .qualify-form-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .form-group {
+      margin-bottom: 2.75rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: clamp(0.9rem, 1.5vw, 1rem);
+      font-weight: 400;
+      color: var(--navy);
+      letter-spacing: 0.02em;
+      margin-bottom: 0.6rem;
+    }
+
+    .form-label span {
+      font-weight: 300;
+      font-style: italic;
+      color: var(--muted-on-light);
+      margin-left: 0.3rem;
+    }
+
+    .form-field {
+      width: 100%;
+      padding: 0.8rem 0;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--rule-light);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--navy);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-field:focus { border-color: rgba(1,11,21,0.35); }
+    .form-field::placeholder { color: var(--muted-on-light); }
+    .form-field.error { border-bottom-color: rgba(180,50,50,0.5); }
+
+    select.form-field {
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' fill='none'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='rgba(1,11,21,0.38)' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.2rem center;
+    }
+
+    textarea.form-field {
+      resize: vertical;
+      min-height: 90px;
+      line-height: 1.75;
+    }
+
+    /* Checkbox group */
+    .check-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem 2rem;
+      margin-top: 0.5rem;
+    }
+
+    .check-label {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: clamp(0.88rem, 1.5vw, 0.98rem);
+      font-weight: 300;
+      color: var(--body-on-light);
+      cursor: pointer;
+    }
+
+    .check-label input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      accent-color: var(--navy);
+      cursor: pointer;
+    }
+
+    /* Divider */
+    .form-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--rule-light);
+      margin: 3rem 0;
+    }
+
+    /* Submit */
+    .form-submit-wrap {
+      margin-top: 3rem;
+    }
+
+    .form-btn {
+      width: 100%;
+      padding: 1.1rem 2rem;
+      background: var(--navy);
+      color: var(--cream);
+      border: none;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .form-btn:hover { opacity: 0.80; }
+
+    .form-note {
+      margin-top: 1.25rem;
+      font-size: 0.8rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--muted-on-light);
+      text-align: center;
+    }
+
+    /* ── THANK-YOU MODAL ────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(1, 11, 21, 0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s, visibility 0.4s;
+      padding: 2rem;
+    }
+    .modal-overlay.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-box {
+      background: var(--cream);
+      max-width: 520px;
+      width: 100%;
+      padding: 4rem 3.5rem;
+      text-align: center;
+      transform: translateY(20px);
+      transition: transform 0.4s;
+    }
+    .modal-overlay.visible .modal-box {
+      transform: translateY(0);
+    }
+
+    .modal-kicker {
+      font-size: 0.85rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--muted-on-light);
+      letter-spacing: 0.04em;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 400;
+      color: var(--navy);
+      letter-spacing: 0.02em;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+    }
+
+    .modal-body {
+      font-size: clamp(0.92rem, 1.6vw, 1.02rem);
+      font-weight: 300;
+      line-height: 1.85;
+      color: var(--body-on-light);
+    }
+
+    /* ── FOOTER ─────────────────────────────────── */
+    .footer-logo-wrap {
+      background: var(--navy);
+      padding: 4rem 5vw 3.5rem;
+      text-align: center;
+      border-top: 1px solid rgba(241,244,247,0.07);
+    }
+
+    .footer-logo {
+      display: block;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 400;
+      color: var(--cream);
+      letter-spacing: 0.04em;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-legal {
+      font-size: 0.72rem;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: var(--muted-on-dark);
+      text-transform: uppercase;
+    }
+
+    /* ── RESPONSIVE ─────────────────────────────── */
+    @media (max-width: 580px) {
+      .qualify-header { padding: 10rem 7vw 5rem; }
+      .qualify-body   { padding: 5rem 7vw 7rem; }
+      .check-group    { grid-template-columns: 1fr; }
+      .modal-box      { padding: 3rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav" aria-label="Navigation du site">
+  <a href="index.html" class="nav-logo">fortOS</a>
+</nav>
+
+
+<!-- HEADER -->
+<header class="qualify-header">
+  <p class="kicker">Une dernière étape</p>
+  <h1>Parlez-nous de votre activité</h1>
+  <p>Aidez-nous à comprendre où vous en êtes et où vous voulez aller.</p>
+</header>
+
+
+<!-- FORM -->
+<main class="qualify-body">
+  <div class="qualify-form-wrap">
+
+    <form id="qualify-form" novalidate>
+
+      <!-- Revenue -->
+      <div class="form-group">
+        <label class="form-label" for="q-revenue">
+          Chiffre d'affaires mensuel actuel
+          <span>(approximatif)</span>
+        </label>
+        <select class="form-field" id="q-revenue" required>
+          <option value="" disabled selected>Sélectionner une tranche</option>
+          <option value="under-2k">Moins de 2 000 $</option>
+          <option value="2k-5k">2 000 $ – 5 000 $</option>
+          <option value="5k-15k">5 000 $ – 15 000 $</option>
+          <option value="15k-50k">15 000 $ – 50 000 $</option>
+          <option value="50k+">50 000 $+</option>
+        </select>
+      </div>
+
+      <!-- Active clients -->
+      <div class="form-group">
+        <label class="form-label" for="q-clients">
+          Nombre de clients actifs
+        </label>
+        <input
+          type="number"
+          class="form-field"
+          id="q-clients"
+          placeholder="ex. 8"
+          min="0"
+          required
+        >
+      </div>
+
+      <div class="form-divider"></div>
+
+      <!-- Services offered -->
+      <div class="form-group">
+        <label class="form-label" for="q-services">
+          Services que vous proposez actuellement
+          <span>(sélectionnez tout ce qui s'applique)</span>
+        </label>
+        <div class="check-group">
+          <label class="check-label">
+            <input type="checkbox" name="services" value="web-design"> Conception web
+          </label>
+          <label class="check-label">
+            <input type="checkbox" name="services" value="seo"> SEO
+          </label>
+          <label class="check-label">
+            <input type="checkbox" name="services" value="social-media"> Réseaux sociaux
+          </label>
+          <label class="check-label">
+            <input type="checkbox" name="services" value="branding"> Image de marque
+          </label>
+          <label class="check-label">
+            <input type="checkbox" name="services" value="ads"> Publicité payante
+          </label>
+          <label class="check-label">
+            <input type="checkbox" name="services" value="other"> Autre
+          </label>
+        </div>
+      </div>
+
+      <div class="form-divider"></div>
+
+      <!-- Bottleneck -->
+      <div class="form-group">
+        <label class="form-label" for="q-bottleneck">
+          Quel est votre principal frein en ce moment ?
+        </label>
+        <textarea
+          class="form-field"
+          id="q-bottleneck"
+          placeholder="Trouver des prospects, conclure des ventes, construire des sites, gérer des clients…"
+          required
+        ></textarea>
+      </div>
+
+      <!-- Goal -->
+      <div class="form-group">
+        <label class="form-label" for="q-goal">
+          À quoi ressemblerait opérer différemment pour vous ?
+          <span>(en une ou deux phrases)</span>
+        </label>
+        <textarea
+          class="form-field"
+          id="q-goal"
+          placeholder="Qu'est-ce qui changerait si le plafond était supprimé ?"
+        ></textarea>
+      </div>
+
+      <!-- How they found the page -->
+      <div class="form-group">
+        <label class="form-label" for="q-source">
+          Comment avez-vous trouvé cette page ?
+        </label>
+        <input
+          type="text"
+          class="form-field"
+          id="q-source"
+          placeholder="Recommandation, réseaux sociaux, prospection…"
+        >
+      </div>
+
+      <!-- Submit -->
+      <div class="form-submit-wrap">
+        <button type="submit" class="form-btn">Soumettre votre candidature</button>
+        <p class="form-note">Vos réponses seront examinées par un humain, pas un algorithme.</p>
+      </div>
+
+    </form>
+
+  </div>
+</main>
+
+
+<!-- FOOTER -->
+<footer class="footer-logo-wrap">
+  <span class="footer-logo">fortOS</span>
+  <p class="footer-legal">© fortOS 2026 &nbsp;·&nbsp; Tous droits réservés &nbsp;·&nbsp; Bêta privée</p>
+</footer>
+
+
+<!-- THANK-YOU MODAL -->
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-box">
+    <p class="modal-kicker">Candidature reçue</p>
+    <h2 class="modal-title" id="modal-title">Merci.</h2>
+    <p class="modal-body" id="modal-name-line">
+      Nous examinerons votre candidature et vous contacterons personnellement.<br><br>
+      Ce n'est pas automatisé. Quelqu'un lira vraiment ce que vous avez écrit.
+      Si vous correspondez au profil, vous aurez de nos nouvelles bientôt.
+    </p>
+  </div>
+</div>
+
+
+<!-- JS -->
+<script>
+  /* Pre-fill name from landing page if available */
+  const firstName = sessionStorage.getItem('fortos_first');
+  if (firstName) {
+    const nameEl = document.getElementById('modal-name-line');
+    nameEl.innerHTML = `Nous avons votre candidature, ${firstName}.<br><br>
+      Nous l'examinerons et vous contacterons personnellement.<br><br>
+      Ce n'est pas automatisé. Quelqu'un lira vraiment ce que vous avez écrit.
+      Si vous correspondez au profil, vous aurez de nos nouvelles bientôt.`;
+  }
+
+  /* Form submit */
+  document.getElementById('qualify-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const revenue    = document.getElementById('q-revenue');
+    const clients    = document.getElementById('q-clients');
+    const bottleneck = document.getElementById('q-bottleneck');
+
+    let valid = true;
+
+    [revenue, clients, bottleneck].forEach(el => {
+      if (!el.value.trim()) {
+        el.classList.add('error');
+        setTimeout(() => el.classList.remove('error'), 2500);
+        valid = false;
+      }
+    });
+
+    if (!valid) return;
+
+    /* Show thank-you modal */
+    document.getElementById('modal').classList.add('visible');
+
+    /* Prevent background scroll */
+    document.body.style.overflow = 'hidden';
+  });
+
+  /* Close modal on backdrop click */
+  document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      this.classList.remove('visible');
+      document.body.style.overflow = '';
+    }
+  });
+</script>
+
+</body>
+</html>

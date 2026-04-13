@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>fortOS — Le moteur qui fait tourner votre agence pendant que vous dormez</title>
+  <meta name="description" content="Des agents IA qui trouvent les prospects, concluent les ventes, construisent les sites et assurent le support. Une seule plateforme. Bêta privée.">
+
+  <!-- Open Graph / Social sharing -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dylanfort13.github.io/fortos-landing/fr/">
+  <meta property="og:title" content="Votre agence. En pilote automatique.">
+  <meta property="og:description" content="L'infrastructure IA qui fait tourner votre agence entière en pilote automatique.">
+  <meta property="og:image" content="https://dylanfort13.github.io/fortos-landing/assets/thumbnail.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Votre agence. En pilote automatique.">
+  <meta name="twitter:description" content="L'infrastructure IA qui fait tourner votre agence entière en pilote automatique.">
+  <meta name="twitter:image" content="https://dylanfort13.github.io/fortos-landing/assets/thumbnail.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── Reset ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Cormorant Garamond', Georgia, serif; overflow-x: hidden; }
+
+    /* ─── Colour tokens ──────────────────────────────── */
+    :root {
+      --navy:            #010b15;
+      --cream:           #f1f4f7;
+      --body-on-light:   rgba(1, 11, 21, 0.72);
+      --muted-on-light:  rgba(1, 11, 21, 0.42);
+      --body-on-dark:    rgba(241, 244, 247, 0.70);
+      --muted-on-dark:   rgba(241, 244, 247, 0.38);
+      --rule-light:      rgba(1, 11, 21, 0.10);
+      --rule-dark:       rgba(241, 244, 247, 0.14);
+      --sec: 9rem;
+    }
+
+    /* ══════════════════════════════════════════════════
+       NAV
+    ══════════════════════════════════════════════════ */
+    #nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      padding: 1.6rem 5vw;
+      transition: background 0.4s, border-color 0.4s;
+    }
+    #nav.scrolled {
+      background: rgba(1, 11, 21, 0.90);
+      border-bottom: 1px solid rgba(241,244,247,0.08);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .nav-logo {
+      font-size: 1.7rem;
+      font-weight: 400;
+      color: var(--cream);
+      letter-spacing: 0.04em;
+      text-decoration: none;
+    }
+
+    /* ══════════════════════════════════════════════════
+       1. HERO  (dark navy)
+    ══════════════════════════════════════════════════ */
+    .hero {
+      background: var(--navy);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 7rem 5vw 0;
+      min-height: 100vh;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 4.8vw, 3.8rem);
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      line-height: 1.2;
+      color: var(--cream);
+      max-width: 680px;
+      margin: 0 auto 1.75rem;
+    }
+
+    .hero-sub {
+      font-size: clamp(1.05rem, 2vw, 1.3rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.8;
+      color: var(--body-on-dark);
+      max-width: 520px;
+      margin: 0 auto 3rem;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(1rem, 1.6vw, 1.15rem);
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--cream);
+      background: transparent;
+      border: 1px solid rgba(241,244,247,0.45);
+      padding: 0.85em 2.6em;
+      margin-bottom: 4.5rem;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .hero-cta:hover {
+      border-color: var(--cream);
+      color: var(--cream);
+    }
+
+    /* Image is the last element — padding-bottom: 0 on hero makes it flush to edge */
+    .hero-img {
+      width: min(92%, 700px);
+      display: block;
+      margin: 0 auto;
+      opacity: 0.88;
+      vertical-align: bottom;
+    }
+
+    /* ══════════════════════════════════════════════════
+       2. HISTORY  (light cream)
+    ══════════════════════════════════════════════════ */
+    .history {
+      background: var(--cream);
+      padding: var(--sec) 5vw;
+    }
+
+    .history-inner {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .history-kicker {
+      font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--body-on-light);
+      margin-bottom: 1rem;
+    }
+
+    .history h2 {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      line-height: 1.12;
+      color: var(--navy);
+      margin-bottom: 4.5rem;
+    }
+
+    .history-body p {
+      font-size: clamp(0.9rem, 1.6vw, 1rem);
+      font-weight: 300;
+      line-height: 1.95;
+      color: var(--body-on-light);
+      margin-bottom: 1.75rem;
+    }
+    .history-body p:nth-child(2) { margin-bottom: 3.5rem; }
+    .history-body p:last-child   { margin-bottom: 0; }
+
+    .underline-em { text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ══════════════════════════════════════════════════
+       3. PILLARS  (dark navy — expanded)
+    ══════════════════════════════════════════════════ */
+    .pillars-wrap {
+      background: var(--navy);
+      padding: var(--sec) 5vw;
+    }
+
+    /* ── What is fortOS intro ── */
+    .pillars-intro {
+      max-width: 760px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .pillars-intro .pillars-intro-kicker {
+      font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--body-on-dark);
+      margin-bottom: 1.25rem;
+    }
+
+    .pillars-intro h2 {
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      line-height: 1.2;
+      color: var(--cream);
+      margin-bottom: 2rem;
+    }
+
+    .pillars-intro p {
+      font-size: clamp(0.9rem, 1.6vw, 1rem);
+      font-weight: 300;
+      line-height: 1.95;
+      color: var(--body-on-dark);
+    }
+
+    /* ── Rule between intro and 4 pillars ── */
+    .pillars-divider {
+      width: min(100%, 760px);
+      height: 1px;
+      background: var(--rule-dark);
+      margin: var(--sec) auto;
+    }
+
+    .pillars-heading {
+      font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--muted-on-dark);
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem 5rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .pillar {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    .pillar-icon {
+      flex-shrink: 0;
+      width: 64px;
+    }
+    .pillar-icon img {
+      width: 100%;
+      display: block;
+      filter: invert(1) brightness(0.75);
+    }
+
+    .pillar-name {
+      font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+      font-weight: 400;
+      color: var(--cream);
+      margin-bottom: 0.6rem;
+    }
+
+    .pillar-desc {
+      font-size: clamp(0.88rem, 1.5vw, 0.98rem);
+      font-weight: 300;
+      line-height: 1.85;
+      color: var(--body-on-dark);
+    }
+
+    /* ══════════════════════════════════════════════════
+       4. SOLO OR BIG TEAM  (light cream)
+    ══════════════════════════════════════════════════ */
+    .solo-wrap {
+      background: var(--cream);
+      padding: var(--sec) 5vw;
+    }
+
+    .solo-wrap h2 {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      line-height: 1.12;
+      color: var(--navy);
+      margin-bottom: 0.75rem;
+      text-align: center;
+    }
+
+    .solo-sub {
+      font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--muted-on-light);
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .solo-body {
+      max-width: 640px;
+      margin: 0 auto 5rem;
+      text-align: center;
+    }
+
+    .solo-body p {
+      font-size: clamp(0.9rem, 1.6vw, 1rem);
+      font-weight: 300;
+      line-height: 1.95;
+      color: var(--body-on-light);
+      margin-bottom: 1.5rem;
+    }
+    .solo-body p:last-child { margin-bottom: 0; }
+
+    .solo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .solo-card {
+      text-align: center;
+    }
+
+    .solo-card-img-wrap {
+      width: 180px;
+      height: 140px;
+      overflow: hidden;
+      margin: 0 auto 2rem;
+      position: relative;
+    }
+
+    .solo-card-img-wrap img {
+      position: absolute;
+      height: 160px;
+      left: -55px;
+      top: 0;
+      opacity: 0.82;
+    }
+
+    .solo-card:last-child .solo-card-img-wrap img {
+      position: static;
+      height: auto;
+      left: auto;
+      width: 100%;
+      object-fit: contain;
+    }
+
+    .solo-card h3 {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 400;
+      color: var(--navy);
+      margin-bottom: 1rem;
+    }
+
+    .solo-card p {
+      font-size: clamp(0.88rem, 1.5vw, 0.98rem);
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--body-on-light);
+    }
+
+    /* ══════════════════════════════════════════════════
+       4b. EXCLUSIVITY BAND  (dark navy — compact)
+    ══════════════════════════════════════════════════ */
+    .exclusive-band {
+      background: var(--navy);
+      padding: 6rem 5vw;
+      text-align: center;
+    }
+
+    .exclusive-band-inner {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .exclusive-kicker {
+      font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--muted-on-dark);
+      margin-bottom: 1rem;
+    }
+
+    .exclusive-band h2 {
+      font-size: clamp(2rem, 4.5vw, 3.5rem);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      line-height: 1.15;
+      color: var(--cream);
+      margin-bottom: 2rem;
+    }
+
+    .exclusive-band p {
+      font-size: clamp(0.9rem, 1.6vw, 1rem);
+      font-weight: 300;
+      line-height: 1.95;
+      color: var(--body-on-dark);
+    }
+
+    /* ══════════════════════════════════════════════════
+       5. REQUEST ACCESS  (light cream)
+    ══════════════════════════════════════════════════ */
+    .access-wrap {
+      background: var(--cream);
+      padding: var(--sec) 5vw;
+    }
+
+    .access-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      align-items: start;
+    }
+
+    .access-left .access-kicker {
+      font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--muted-on-light);
+      margin-bottom: 1rem;
+    }
+
+    .access-left h2 {
+      font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      line-height: 1.12;
+      color: var(--navy);
+      margin-bottom: 2rem;
+    }
+
+    .access-left p {
+      font-size: clamp(0.9rem, 1.6vw, 1rem);
+      font-weight: 300;
+      line-height: 1.95;
+      color: var(--body-on-light);
+      margin-bottom: 1.25rem;
+    }
+    .access-left p:last-child { margin-bottom: 0; }
+
+    .form-box {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-field {
+      width: 100%;
+      padding: 0.9rem 0;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--rule-light);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--navy);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-field:focus { border-color: rgba(1,11,21,0.35); }
+    .form-field::placeholder { color: var(--muted-on-light); }
+
+    select.form-field {
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' fill='none'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='rgba(1,11,21,0.38)' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.2rem center;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-btn {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 1.1rem 2rem;
+      background: var(--navy);
+      color: var(--cream);
+      border: none;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .form-btn:hover { opacity: 0.80; }
+
+    .form-note {
+      margin-top: 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--muted-on-light);
+      text-align: center;
+    }
+
+    /* ══════════════════════════════════════════════════
+       6. QUOTE  (dark navy)
+    ══════════════════════════════════════════════════ */
+    .quote-section {
+      background: var(--navy);
+      padding: var(--sec) 5vw;
+      display: flex;
+      align-items: center;
+      gap: 6rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .quote-img {
+      width: min(38%, 320px);
+      flex-shrink: 0;
+      opacity: 0.80;
+    }
+
+    .quote-text {
+      font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.35;
+      color: var(--cream);
+      margin-bottom: 2rem;
+    }
+
+    .quote-attr {
+      font-size: clamp(0.85rem, 1.5vw, 0.95rem);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: var(--muted-on-dark);
+    }
+
+    /* ══════════════════════════════════════════════════
+       7. FOOTER  (dark navy)
+    ══════════════════════════════════════════════════ */
+    .footer-logo-wrap {
+      background: var(--navy);
+      padding: 5rem 5vw 4rem;
+      text-align: center;
+      border-top: 1px solid rgba(241,244,247,0.07);
+    }
+
+    .footer-logo {
+      display: block;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 400;
+      color: var(--cream);
+      letter-spacing: 0.04em;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-legal {
+      font-size: 0.72rem;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: var(--muted-on-dark);
+      text-transform: uppercase;
+    }
+
+    /* ══════════════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════════════ */
+    @media (max-width: 860px) {
+      .quote-section { flex-direction: column; gap: 3rem; text-align: center; max-width: 100%; }
+      .quote-img     { width: min(55%, 260px); }
+      .pillars-grid  { grid-template-columns: 1fr; max-width: 480px; }
+      .solo-grid     { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+      .access-grid   { grid-template-columns: 1fr; gap: 3.5rem; }
+    }
+
+    @media (max-width: 680px) {
+      :root { --sec: 6rem; }
+      .hero           { min-height: 80svh; padding-bottom: 0; justify-content: flex-start; }
+      .hero-img       { margin-top: auto; }
+      .history        { padding: var(--sec) 7vw; }
+      .pillars-wrap   { padding: var(--sec) 7vw; }
+      .pillars-grid   { grid-template-columns: 1fr; gap: 2.75rem; max-width: 400px; }
+      .solo-wrap      { padding: var(--sec) 7vw; }
+      .solo-body      { margin-bottom: 4rem; }
+      .solo-grid      { grid-template-columns: 1fr; gap: 3.5rem; }
+      .exclusive-band { padding: 4rem 7vw; }
+      .access-wrap    { padding: var(--sec) 7vw; }
+      .form-row       { grid-template-columns: 1fr; }
+      .quote-section  { padding: var(--sec) 7vw; }
+      .footer-logo-wrap { padding: 5rem 7vw 4rem; }
+    }
+
+    @media (max-width: 480px) {
+      .hero h1          { font-size: 1.9rem; }
+      .history h2       { font-size: 2.1rem; }
+      .pillars-intro h2 { font-size: 1.8rem; }
+      .solo-wrap h2     { font-size: 2.1rem; }
+      .access-left h2   { font-size: 2rem; }
+    }
+
+    /* ══════════════════════════════════════════════════
+       SCROLL FADE
+    ══════════════════════════════════════════════════ */
+    .fade {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade.in {
+      opacity: 1;
+      transform: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     NAV
+══════════════════════════════════════════════ -->
+<nav id="nav" aria-label="Navigation du site">
+  <a href="#" class="nav-logo">fortOS</a>
+</nav>
+
+
+<!-- ══════════════════════════════════════════════
+     1. HERO  — dark navy
+══════════════════════════════════════════════ -->
+<section class="hero">
+
+  <h1>Le moteur qui fait tourner votre agence pendant que vous dormez</h1>
+
+  <p class="hero-sub">
+    Connectez votre marque. Nos agents IA trouvent les prospects, concluent les ventes,
+    construisent les sites et assurent le support.
+  </p>
+
+  <a href="#access" class="hero-cta">Demander l'accès</a>
+
+  <img
+    class="hero-img"
+    src="../assets/image-pack-1/1.png"
+    alt="Gravure ancienne d'une machine à vapeur"
+    loading="eager"
+  >
+
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     2. HISTORY  — light cream
+══════════════════════════════════════════════ -->
+<section class="history" id="history">
+  <div class="history-inner">
+
+    <p class="history-kicker">Un schéma qui se répète</p>
+    <h2>L'histoire bégaie encore</h2>
+
+    <div class="history-body">
+      <p>
+        Au XIXe siècle, la machine à vapeur ne s'est pas annoncée. Un petit groupe y avait
+        accès bien avant que le monde comprenne ce que cela signifiait. Au moment où c'était
+        évident pour tout le monde, les positions étaient déjà prises.
+      </p>
+      <p>
+        L'IA n'est pas différente. Ce que vous avez vu publiquement est
+        <span class="underline-em">en retard de plusieurs années</span>
+        sur ce qui tourne déjà dans les systèmes privés. La vraie capacité se trouve
+        derrière des portes closes.
+      </p>
+      <p>
+        Nous sommes de l'autre côté de ces portes. Et pour un très petit groupe,
+        nous les ouvrons.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     3. PILLARS  — dark navy (expanded)
+══════════════════════════════════════════════ -->
+<section class="pillars-wrap" id="pillars">
+
+  <div class="pillars-intro">
+    <p class="pillars-intro-kicker">Alors, qu'est-ce que fortOS ?</p>
+    <h2>La plateforme unique qui remplace tous les outils dont vous avez besoin pour opérer</h2>
+    <p>
+      Pas d'outil de génération de leads. Pas de plateforme de prospection. Pas de constructeur
+      de site séparé. Pas d'hébergement tiers. Pas de logiciel de support. Juste un seul système,
+      alimenté par des agents IA, qui gère l'opération entière automatiquement.
+    </p>
+  </div>
+
+  <div class="pillars-divider" role="separator"></div>
+
+  <h2 class="pillars-heading">Les 4 piliers</h2>
+
+  <div class="pillars-grid">
+
+    <div class="pillar">
+      <div class="pillar-icon">
+        <img src="../assets/image-pack-2/1.png" alt="" aria-hidden="true">
+      </div>
+      <div class="pillar-body">
+        <h3 class="pillar-name">Trouver</h3>
+        <p class="pillar-desc">Des agents IA sourcent et qualifient automatiquement les prospects locaux.</p>
+      </div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-icon">
+        <img src="../assets/image-pack-2/2.png" alt="" aria-hidden="true">
+      </div>
+      <div class="pillar-body">
+        <h3 class="pillar-name">Vendre</h3>
+        <p class="pillar-desc">Prospection, relances et démos envoyées sans lever le petit doigt.</p>
+      </div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-icon">
+        <img src="../assets/image-pack-2/3.png" alt="" aria-hidden="true">
+      </div>
+      <div class="pillar-body">
+        <h3 class="pillar-name">Construire</h3>
+        <p class="pillar-desc">Sites web recherchés, conçus et déployés par le pipeline.</p>
+      </div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-icon">
+        <img src="../assets/image-pack-2/4.png" alt="" aria-hidden="true">
+      </div>
+      <div class="pillar-body">
+        <h3 class="pillar-name">Support</h3>
+        <p class="pillar-desc">Questions clients traitées. Problèmes résolus. Vous restez en dehors.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     4. SOLO OR BIG TEAM  — light cream
+══════════════════════════════════════════════ -->
+<section class="solo-wrap" id="solo">
+
+  <h2>Solo ou grande équipe</h2>
+  <p class="solo-sub">Peu importe.</p>
+
+  <div class="solo-body">
+    <p>
+      Que vous soyez un freelance solo qui conclut des clients entre deux cafés
+      ou une grande agence fatiguée de recruter pour croître — fortOS a été conçu pour vous.
+    </p>
+    <p>
+      Vous savez déjà livrer. Vous avez déjà les clients. Ce qui vous manque,
+      c'est la machine qui supprime le plafond.
+    </p>
+    <p>fortOS ne remplace pas votre expertise. Il la multiplie.</p>
+  </div>
+
+  <div class="solo-grid">
+
+    <div class="solo-card">
+      <div class="solo-card-img-wrap">
+        <img src="../assets/image-pack-1/3.png" alt="Dauphin — gravure ancienne" loading="lazy">
+      </div>
+      <h3>Freelancer</h3>
+      <p>
+        Vous êtes le commercial, le constructeur et l'équipe support. fortOS prend
+        les trois à votre charge et vous permet de facturer comme si vous aviez
+        une équipe complète derrière vous.
+      </p>
+    </div>
+
+    <div class="solo-card">
+      <div class="solo-card-img-wrap">
+        <img src="../assets/image-pack-1/4.png" alt="Cachalot — gravure ancienne" loading="lazy">
+      </div>
+      <h3>Agence</h3>
+      <p>
+        Vous avez déjà construit quelque chose de réel. La question est maintenant de savoir
+        jusqu'où cela peut aller sans ajouter des effectifs. fortOS est l'infrastructure
+        qui vous permet de grandir sans faire grossir la masse salariale.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     4b. EXCLUSIVITY BAND  — dark navy (compact)
+══════════════════════════════════════════════ -->
+<section class="exclusive-band">
+  <div class="exclusive-band-inner">
+    <p class="exclusive-kicker">Entièrement en marque blanche</p>
+    <h2>Ils vous voient. Pas nous.</h2>
+    <p>
+      fortOS a été conçu pour disparaître. Vos clients interagissent avec votre marque
+      à chaque point de contact — de la première démo au rapport mensuel.
+      Aucun filigrane fortOS. Aucune mention de tiers. Aucune trace du moteur
+      qui tourne en dessous.
+    </p>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     5. REQUEST ACCESS  — light cream
+══════════════════════════════════════════════ -->
+<section class="access-wrap" id="access">
+  <div class="access-grid">
+
+    <div class="access-left">
+      <p class="access-kicker">Certaines révolutions ont une liste d'invités…</p>
+      <h2>Demandez votre accès</h2>
+      <p>fortOS ne se lance pas publiquement.</p>
+      <p>
+        Les premiers accès iront à un petit groupe de freelances et de propriétaires
+        d'agences prêts à opérer différemment.<br>
+        Pas de publicité. Pas de Product Hunt. Pas d'annonce publique.
+      </p>
+      <p>Si vous avez trouvé cette page, vous êtes déjà plus proche que la plupart.</p>
+    </div>
+
+    <div>
+      <form class="form-box" id="access-form" novalidate>
+
+        <div class="form-row">
+          <input
+            type="text"
+            class="form-field"
+            id="first-name"
+            placeholder="Prénom"
+            autocomplete="given-name"
+            required
+          >
+          <input
+            type="text"
+            class="form-field"
+            id="last-name"
+            placeholder="Nom"
+            autocomplete="family-name"
+            required
+          >
+        </div>
+
+        <input
+          type="email"
+          class="form-field"
+          id="email-input"
+          placeholder="votre@agence.com"
+          autocomplete="email"
+          required
+        >
+
+        <input
+          type="tel"
+          class="form-field"
+          id="phone-input"
+          placeholder="Numéro de téléphone"
+          autocomplete="tel"
+        >
+
+        <select class="form-field" id="team-size" required>
+          <option value="" disabled selected>Taille de l'équipe</option>
+          <option value="solo">Solo</option>
+          <option value="2-5">2 – 5</option>
+          <option value="6-20">6 – 20</option>
+          <option value="20+">20+</option>
+        </select>
+
+        <button type="submit" class="form-btn">Demander votre accès</button>
+
+      </form>
+      <p class="form-note">Ce n'est pas une liste d'attente. C'est une sélection.</p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     6. QUOTE  — dark navy
+══════════════════════════════════════════════ -->
+<section class="quote-section" aria-label="Citation d'Andrew Carnegie">
+
+  <img
+    class="quote-img"
+    src="../assets/image-pack-1/2.png"
+    alt="Huîtres — gravure ancienne"
+    loading="lazy"
+  >
+
+  <div class="quote-content">
+    <p class="quote-text">
+      « Le premier prend l'huître,<br>
+      le second prend la coquille. »
+    </p>
+    <p class="quote-attr">-Andrew Carnegie</p>
+  </div>
+
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     7. FOOTER  — dark navy
+══════════════════════════════════════════════ -->
+<footer class="footer-logo-wrap">
+  <span class="footer-logo">fortOS</span>
+  <p class="footer-legal">© fortOS 2026 &nbsp;·&nbsp; Tous droits réservés &nbsp;·&nbsp; Bêta privée</p>
+</footer>
+
+
+<!-- ══════════════════════════════════════════════
+     JS
+══════════════════════════════════════════════ -->
+<script>
+  /* Nav scroll */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  /* Form: validate → navigate to qualify page */
+  document.getElementById('access-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const firstName = document.getElementById('first-name');
+    const lastName  = document.getElementById('last-name');
+    const email     = document.getElementById('email-input');
+    const teamSize  = document.getElementById('team-size');
+
+    let valid = true;
+
+    [firstName, lastName, teamSize].forEach(el => {
+      if (!el.value.trim()) { flash(el); valid = false; }
+    });
+
+    if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+      flash(email);
+      valid = false;
+    }
+
+    if (!valid) return;
+
+    sessionStorage.setItem('fortos_first', firstName.value.trim());
+    sessionStorage.setItem('fortos_last',  lastName.value.trim());
+    sessionStorage.setItem('fortos_email', email.value.trim());
+
+    window.location.href = 'fortos-qualify.html';
+  });
+
+  function flash(el) {
+    el.style.borderBottomColor = 'rgba(180,50,50,0.5)';
+    setTimeout(() => { el.style.borderBottomColor = ''; }, 2200);
+  }
+
+  /* ── Scroll fade-in ── */
+  const fadeTargets = document.querySelectorAll([
+    '.hero h1', '.hero-sub', '.hero-cta', '.hero-img',
+    '.history-kicker', '.history h2', '.history-body p',
+    '.pillars-intro-kicker', '.pillars-intro h2', '.pillars-intro p',
+    '.pillars-divider', '.pillars-heading', '.pillar',
+    '.solo-wrap h2', '.solo-sub', '.solo-body p', '.solo-card',
+    '.exclusive-kicker', '.exclusive-band h2', '.exclusive-band p',
+    '.access-kicker', '.access-left h2', '.access-left p', '.form-box', '.form-note',
+    '.quote-img', '.quote-text', '.quote-attr',
+    '.footer-logo', '.footer-legal'
+  ].join(','));
+
+  fadeTargets.forEach(el => el.classList.add('fade'));
+
+  const fadeObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        fadeObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  fadeTargets.forEach(el => fadeObserver.observe(el));
+</script>
+
+</body>
+</html>
